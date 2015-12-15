@@ -9,6 +9,27 @@ function registerFilter( id, filter ) {
 
 }
 
+function interpretValue( value ) {
+
+	value = value.toLowerCase();
+
+	var re = /([-]*[\d\.]+)(px|%)*/gmi
+	var m;
+
+	re.lastIndex = 0;
+	while( ( m = re.exec( value ) ) !== null) {
+		if( m.index === re.lastIndex ) {
+			re.lastIndex++;
+		}
+		var v = parseFloat( m[ 1 ] );
+		if( m[ 2 ] === undefined ) return v * 100;
+		if( m[ 2 ] === 'px' ) return v;
+		if( m[ 2 ] === '%' ) return v
+	}
+
+
+}
+
 // https://developer.mozilla.org/en/docs/Web/CSS/filter
 
 function FilterParam( name ) {
@@ -47,6 +68,15 @@ RangeFilterParam.prototype.init = function() {
 	var label = document.createElement( 'input' );
 	label.type = 'text';
 	label.className = 'label';
+
+	label.addEventListener( 'change', function( e ) {
+		this.setValue( label.value );
+		onValueUpdated();
+	}.bind( this ) );
+	label.addEventListener( 'keyup', function( e ) {
+		this.setValue( label.value );
+		onValueUpdated();
+	}.bind( this ) );
 
 	var units = document.createElement( 'span' );
 	units.className = 'units';
@@ -194,13 +224,13 @@ Grayscale.prototype = Object.create( Filter.prototype );
 
 Grayscale.prototype.parseValue = function( value ) {
 
-	this.params.weight.setValue( parseFloat( value ) * 100 );
+	this.params.weight.setValue( interpretValue( value ) );
 
 }
 
 Grayscale.prototype.getValue = function() {
 
-	return 'grayscale(' + ( this.params.weight.value / 100 ) + ')';
+	return 'grayscale(' + this.params.weight.value + '%)';
 	
 }
 
@@ -218,13 +248,13 @@ Brightness.prototype = Object.create( Filter.prototype );
 
 Brightness.prototype.parseValue = function( value ) {
 
-	this.params.weight.setValue( parseFloat( value ) * 100 );
+	this.params.weight.setValue( interpretValue( value ) );
 
 }
 
 Brightness.prototype.getValue = function() {
 
-	return 'brightness(' + ( this.params.weight.value / 100 )+ ')';
+	return 'brightness(' + this.params.weight.value + '%)';
 	
 }
 
@@ -242,13 +272,13 @@ Contrast.prototype = Object.create( Filter.prototype );
 
 Contrast.prototype.parseValue = function( value ) {
 
-	this.params.weight.setValue( parseFloat( value ) * 100 );
+	this.params.weight.setValue( interpretValue( value ) );
 
 }
 
 Contrast.prototype.getValue = function() {
 
-	return 'contrast(' + ( this.params.weight.value / 100 ) + ')';
+	return 'contrast(' + this.params.weight.value + '%)';
 	
 }
 
@@ -266,13 +296,13 @@ Sepia.prototype = Object.create( Filter.prototype );
 
 Sepia.prototype.parseValue = function( value ) {
 
-	this.params.weight.setValue( parseFloat( value ) * 100 );
+	this.params.weight.setValue( interpretValue( value ) );
 
 }
 
 Sepia.prototype.getValue = function() {
 
-	return 'sepia(' + ( this.params.weight.value / 100 ) + ')';
+	return 'sepia(' + this.params.weight.value + '%)';
 	
 }
 
@@ -290,13 +320,13 @@ Saturation.prototype = Object.create( Filter.prototype );
 
 Saturation.prototype.parseValue = function( value ) {
 
-	this.params.weight.setValue( parseFloat( value ) * 100 );
+	this.params.weight.setValue( interpretValue( value ) );
 
 }
 
 Saturation.prototype.getValue = function() {
 
-	return 'saturate(' + ( this.params.weight.value / 100 ) + ')';
+	return 'saturate(' + this.params.weight.value + '%)';
 	
 }
 
@@ -338,13 +368,13 @@ Invert.prototype = Object.create( Filter.prototype );
 
 Invert.prototype.parseValue = function( value ) {
 
-	this.params.weight.setValue( parseFloat( value ) * 100 );
+	this.params.weight.setValue( interpretValue( value ) );
 
 }
 
 Invert.prototype.getValue = function() {
 
-	return 'invert(' + ( this.params.weight.value ) / 100 + ')';
+	return 'invert(' + this.params.weight.value + '%)';
 	
 }
 
@@ -362,13 +392,13 @@ Opacity.prototype = Object.create( Filter.prototype );
 
 Opacity.prototype.parseValue = function( value ) {
 
-	this.params.weight.setValue( parseFloat( value ) * 100 );
+	this.params.weight.setValue( interpretValue( value ) );
 
 }
 
 Opacity.prototype.getValue = function() {
 
-	return 'opacity(' + ( this.params.weight.value / 100 ) + ')';
+	return 'opacity(' + this.params.weight.value + '%)';
 	
 }
 
@@ -430,7 +460,15 @@ function onValueUpdated() {
 
 }
 
+window.addEventListener( 'load', update );
+
 chrome.devtools.panels.elements.onSelectionChanged.addListener(function(){
+
+	update();
+	
+} );
+
+function update() {
 
 	if( toolbar === null ) {
 
@@ -488,8 +526,8 @@ chrome.devtools.panels.elements.onSelectionChanged.addListener(function(){
 		}
 
 	);
-	
-} );
+
+}
 
 function processDeclaration( str ) {
 
@@ -515,5 +553,5 @@ function getFilters() {
 }
 
 chrome.extension.onMessage.addListener(function (msg, _, sendResponse) {
-	console.log(msg, _, sendResponse);
+	alert(msg, _, sendResponse);
 });

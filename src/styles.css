@@ -57,7 +57,7 @@ input[type=range]::-moz-range-thumb {
     box-shadow: 0 0 3px 0px rgba(0,0,0,.5);
 }
 
-#toolbar{ list-style-type: none; padding: 5px 10px; background-color: #f3f3f3; border-bottom: 1px solid #ccc; font-family: Lucida Grande, sans-serif; font-size: 12px;}
+#toolbar{ list-style-type: none; padding: 5px 5px; background-color: #f3f3f3; border-bottom: 1px solid #ccc; font-family: Lucida Grande, sans-serif; font-size: 12px;}
 #toolbar:after{ visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0;}
 #toolbar li{ float: left; padding: 5px;}
 #toolbar li:hover{ color: #333; background-color: #e5e5e5;}
