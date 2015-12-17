@@ -7,8 +7,9 @@ An extension for Chrome DevTools that adds a sidebar to the Elements panel to ea
 
 #### How to install ####
 
-[Install the extension from the Chrome Store](https://chrome.google.com/webstore/detail/jeidmdcnbpcnjmmeelolmhldaboickfn)
 [![npm](https://raw.githubusercontent.com/spite/css-filters-devtools-extension/master/about/ChromeWebStore_Badge_v2_496x150.png)](https://chrome.google.com/webstore/detail/jeidmdcnbpcnjmmeelolmhldaboickfn)
+
+[Install the extension from the Chrome Store](https://chrome.google.com/webstore/detail/jeidmdcnbpcnjmmeelolmhldaboickfn)
 
 #### Features ####
 
