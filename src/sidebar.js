@@ -221,7 +221,7 @@ Filter.prototype.composeUI = function() {
 	remove.addEventListener( 'click', function( e ) {
 		styleFilters.forEach( function( f, n ) {
 			if( f === this ) {
-				styleFilters.splice( n, 1 );
+				//styleFilters.splice( n, 1 );
 				panel.parentElement.removeChild( panel );
 				onValueUpdated();
 			}
@@ -568,6 +568,15 @@ function onLoad() {
 			styleFilters.push( filter );
 			onValueUpdated();
 		}.bind( j ) )
+
+		sort = Sortable.create( filtersPanel, { 
+			animation: 150, 
+			handle: '.handle',
+			onUpdate: function ( e ){
+				onValueUpdated();
+			}
+		} ); 
+		
 	}
 
 	update();
