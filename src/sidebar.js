@@ -207,7 +207,7 @@ Filter.prototype.composeUI = function() {
 	panel.className = 'panel';
 
 	var handle = document.createElement( 'div' );
-	handle.className = 'handle';
+	handle.className = 'handle handle-icon';
 
 	var h3 = document.createElement( 'h3' );
 	h3.textContent = this.name;
@@ -511,6 +511,7 @@ registerFilter( 'drop-shadow', DropShadow );
 
 var toolbar = null;
 var filtersPanel = null;
+var noFilters = null;
 var sort = null;
 
 function onValueUpdated() {
@@ -534,8 +535,17 @@ window.addEventListener( 'load', onLoad );
 
 function onLoad() {
 
-	filtersPanel = document.getElementById( 'filters-panel' );
+	var links = document.querySelectorAll( 'a[rel=external]' );
+	for( var j = 0; j < links.length; j++ ) {
+		var a = links[ j ];
+		a.addEventListener( 'click', function( e ) {
+			window.open( this.href, '_blank' );
+			e.preventDefault();
+		}, false );
+	}
 
+	filtersPanel = document.getElementById( 'filters-panel' );
+	noFilters = document.getElementById( 'no-filters' );
 	toolbar = document.getElementById( 'toolbar' );
 
 	for( var j in registeredFilters ) {
@@ -578,30 +588,43 @@ function update() {
 
 			var filters = processDeclaration( result );
 
-			if( sort ) sort.destroy();
+			if( sort ) {
+				sort.destroy();
+				sort = null;
+			}
 
 			filtersPanel.innerHTML = '';
 			styleFilters = [];
 
-			var str = '';
-			filters.forEach( function( f ) {
-				if( registeredFilters[ f.name ] ){
-					var filter = new registeredFilters[ f.name ]();
-					filter.parseValue( f.value );
-					var ui = filter.composeUI();
-					ui.setAttribute( 'data-filter', styleFilters.length );
-					filtersPanel.appendChild( ui );
-					styleFilters.push( filter );
-				}
-			} );
+			if( filters.length ) {
 
-			sort = Sortable.create( filtersPanel, { 
-				animation: 150, 
-				handle: '.handle',
-				onUpdate: function ( e ){
-					onValueUpdated();
-				}
- 			} ); 
+				noFilters.style.display = 'none';
+
+				var str = '';
+				filters.forEach( function( f ) {
+					if( registeredFilters[ f.name ] ){
+						var filter = new registeredFilters[ f.name ]();
+						filter.parseValue( f.value );
+						var ui = filter.composeUI();
+						ui.setAttribute( 'data-filter', styleFilters.length );
+						filtersPanel.appendChild( ui );
+						styleFilters.push( filter );
+					}
+				} );
+
+				sort = Sortable.create( filtersPanel, { 
+					animation: 150, 
+					handle: '.handle',
+					onUpdate: function ( e ){
+						onValueUpdated();
+					}
+	 			} ); 
+
+	 		} else {
+
+	 			noFilters.style.display = 'block';
+				
+	 		}
 
 		}
 

@@ -64,7 +64,8 @@ input[type=range]::-moz-range-thumb {
 #toolbar a{ font-family: 'Lucida Grande', sans-serif; font-size: 12px; color: #5a5a5a; text-decoration: none}
 #filters-panel{ clear: both;}
 .panel{ position: relative; border-bottom: 1px solid #ccc; background-color: white;}
-.panel .handle{ position: absolute; left: 0; top: 0; width: 30px; bottom: 0; background-color: #ddd; cursor: move;}
+.panel .handle{ position: absolute; left: 0; top: 0; width: 30px; bottom: 0; background-color: #ddd; cursor: move; }
+.handle-icon{ background-image: url(handler.svg); background-repeat: no-repeat; background-position: 50% 8px; background-size: 20%;}
 .panel h3{ position: absolute; left: 40px; top: 5px;}
 .panel .lines{ padding-top: 10px;}
 .remove{ position: absolute; right: 10px; top: 5px; border-bottom: 1px inherit dotted; opacity: .5; transition: opacity 150ms ease-out;}
@@ -75,4 +76,6 @@ input[type=range]::-moz-range-thumb {
 .line input[type=text].text{ position: absolute; left: 120px; right: 60px; width: calc(100% - 200px); margin:; 0; outline: none; border: 1px solid #f3f3f3; padding: 0 5px }
 .line .label{ position: absolute; right: 25px; width: 50px; text-align: right; outline: none; border: 1px solid #f3f3f3; padding: 0 5px;}
 .line .units{ position: absolute; right: 10px; width: 20px; text-align: right;}
+#no-filters{ padding: 10px; text-align: center;}
+footer{ padding: 5px 5px; background-color: #f3f3f3; border-bottom: 1px solid #ccc; font-family: Lucida Grande, sans-serif; font-size: 12px; text-align: right;}
 
