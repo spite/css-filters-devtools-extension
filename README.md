@@ -5,6 +5,11 @@ CSS Filters DevTools Extension
 
 An extension for Chrome DevTools that adds a sidebar to the Elements panel to easily edit and arrange CSS Filters.
 
+#### How to install ####
+
+[Install the extension from the Chrome Store](https://chrome.google.com/webstore/detail/jeidmdcnbpcnjmmeelolmhldaboickfn)
+[![npm](https://raw.githubusercontent.com/spite/css-filters-devtools-extension/master/about/ChromeWebStore_Badge_v2_496x150.png)](https://chrome.google.com/webstore/detail/jeidmdcnbpcnjmmeelolmhldaboickfn)
+
 #### Features ####
 
 Supported filters:
@@ -26,10 +31,10 @@ Drag and drop to arrange the filter stack
 #### TO DO ####
 
 Add support for ``filter: url()``
-Improve color selector in ``drop-shadow``
+Improve color selector in ``drop-shadow`
 
 #### License ####
 
 MIT licensed
 
-Copyright (C) 2015 Jaume Sanchez Elias, http://www.clicktorelease.com
+Copyright (C) 2015 Jaume Sanchez Elias [@thespite](https://twitter.com/thespite), [clicktorelease.com](https://www.clicktorelease.com)
