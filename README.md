@@ -1,7 +1,7 @@
 # css-filters-devtools-extension
 CSS Filters DevTools Extension
 
-![](https://raw.githubusercontent.com/spite/css-filters-devtools-extension/master/about/marquee.png)
+![](https://raw.githubusercontent.com/spite/css-filters-devtools-extension/master/about/demo.gif)
 
 An extension for Chrome DevTools that adds a sidebar to the Elements panel to easily edit and arrange CSS Filters.
 
@@ -45,6 +45,8 @@ RegExp foo developed with [regular expressions 101](https://regex101.com/)
 [MDN CSS Filter](https://developer.mozilla.org/en/docs/Web/CSS/filter)
 
 [Understanding CSS Filter Effects (HTML5Rocks)](http://www.html5rocks.com/en/tutorials/filters/understanding-css/)
+
+Tested in the amazing [CSSGram](http://una.im/CSSgram/)
 
 #### License ####
 
