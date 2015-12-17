@@ -32,7 +32,19 @@ Drag and drop to arrange the filter stack
 #### TO DO ####
 
 Add support for ``filter: url()``
-Improve color selector in ``drop-shadow`
+Improve color selector in ``drop-shadow``
+
+#### Credits ####
+
+Inspired on [Firefox's DevTools CSS filters editor](https://developer.mozilla.org/en-US/docs/Tools/Page_Inspector/How_to/Edit_CSS_filters)
+
+Drag and drop sort by [Sortable](http://rubaxa.github.io/Sortable/)
+
+RegExp foo developed with [regular expressions 101](https://regex101.com/)
+
+[MDN CSS Filter](https://developer.mozilla.org/en/docs/Web/CSS/filter)
+
+[Understanding CSS Filter Effects (HTML5Rocks)](http://www.html5rocks.com/en/tutorials/filters/understanding-css/)
 
 #### License ####
 
