@@ -1,5 +1,3 @@
-var re = /([a-z\-]*)[ ]*\(([^\)]+)\)[ ]*/gmi
-
 var registeredFilters = {};
 var styleFilters = [];
 
@@ -123,6 +121,64 @@ RangeFilterParam.prototype.setValue = function( v ) {
 	this.input.value = v;
 	this.input.style.backgroundSize = ( this.value - this.min ) * 100 / ( this.max - this.min ) + '% 100%';
 	this.label.value = this.value;
+
+}
+
+function TextFilterParam( name ) {
+
+	FilterParam.apply( this, arguments );
+	
+	this.init();
+
+}
+
+TextFilterParam.prototype = Object.create( FilterParam.prototype );
+
+TextFilterParam.prototype.init = function() {
+
+	var line = document.createElement( 'div' );
+	line.className = 'line';
+	
+	var handle = document.createElement( 'div' );
+	handle.className = 'handle';
+
+	var n = document.createElement( 'h4' );
+	n.textContent = this.name;
+	
+	var i = document.createElement( 'input' );
+	i.setAttribute( 'type', 'text' );
+	i.className = 'text';
+	
+	i.value = this.value;
+
+	i.addEventListener( 'change', function( e ) {
+		this.setValue( i.value );
+		onValueUpdated();
+	}.bind( this ) );
+	i.addEventListener( 'input', function( e ) {
+		this.setValue( i.value );
+		onValueUpdated();
+	}.bind( this ) );
+
+	line.appendChild( handle );
+	line.appendChild( n );
+	line.appendChild( i );
+
+	this.line = line;
+	this.input = i;
+
+}
+
+TextFilterParam.prototype.getWidget = function() {
+
+	return this.line;
+
+}
+
+TextFilterParam.prototype.setValue = function( v ) {
+
+	this.value = v;
+	this.input.value = v;
 
 }
 
@@ -410,10 +466,12 @@ function DropShadow() {
 	this.addParam( new RangeFilterParam( 'left', -100, 100, .5, 'px' ) )
 	this.addParam( new RangeFilterParam( 'top', -100, 100, .5, 'px' ) )
 	this.addParam( new RangeFilterParam( 'radius', 0, 100, .5, 'px' ) )
+	this.addParam( new TextFilterParam( 'color' ) )
 
 	this.params.left.setValue( 5 );
 	this.params.top.setValue( 5 );
 	this.params.radius.setValue( 10 );
+	this.params.color.setValue( '' );
 
 }
 
@@ -421,13 +479,22 @@ DropShadow.prototype = Object.create( Filter.prototype );
 
 DropShadow.prototype.parseValue = function( value ) {
 
-	this.params.radius.setValue( parseFloat( value ) );
+	var re = /(-*[\d]+)(px)*[\s]+(-*[\d]+)(px)*[\s]+(-*[\d]+)(px)*/gmi
+	var m = re.exec( value );
+
+	this.params.left.setValue( parseFloat( m[ 1 ] ) );
+	this.params.top.setValue( parseFloat( m[ 3 ] ) );
+	this.params.radius.setValue( parseFloat( m[ 5 ] ) );
+
+	var color = value.replace( m[ 0 ], '' )
+
+	this.params.color.setValue( color );
 	
 }
 
 DropShadow.prototype.getValue = function() {
 
-	return 'drop-shadow(' + this.params.left.value + 'px ' + this.params.top.value + 'px ' + this.params.radius.value + 'px blue)';
+	return 'drop-shadow(' + this.params.left.value + 'px ' + this.params.top.value + 'px ' + this.params.radius.value + 'px ' + this.params.color.value + ')';
 
 }
 
@@ -443,16 +510,19 @@ registerFilter( 'opacity', Opacity );
 registerFilter( 'drop-shadow', DropShadow );
 
 var toolbar = null;
+var filtersPanel = null;
 var sort = null;
 
 function onValueUpdated() {
 
 	var values = [];
-	styleFilters.forEach( function ( f ) {
 
+	for( var j = 0; j < filtersPanel.children.length; j++ ) {
+		var c = filtersPanel.children[ j ];
+		var n = c.getAttribute( 'data-filter' );
+		var f = styleFilters[ parseInt( n, 10 ) ];
 		values.push( f.getValue() );
-
-	} );
+	}
 
 	if( values.length === 0 ) values.push( 'none' );
 
@@ -460,7 +530,39 @@ function onValueUpdated() {
 
 }
 
-window.addEventListener( 'load', update );
+window.addEventListener( 'load', onLoad );
+
+function onLoad() {
+
+	filtersPanel = document.getElementById( 'filters-panel' );
+
+	toolbar = document.getElementById( 'toolbar' );
+
+	for( var j in registeredFilters ) {
+
+		var f = registeredFilters[ j ];
+
+		var li = document.createElement( 'li' );
+
+		var b = document.createElement( 'a' );
+		b.textContent = f.name;
+		b.setAttribute( 'href', '#' );
+		li.appendChild( b );
+		toolbar.appendChild( li );
+
+		b.addEventListener( 'click', function( e ) {
+			var filter = new registeredFilters[ this ]();
+			var ui = filter.composeUI();
+			ui.setAttribute( 'data-filter', styleFilters.length );
+			filtersPanel.appendChild( ui );
+			styleFilters.push( filter );
+			onValueUpdated();
+		}.bind( j ) )
+	}
+
+	update();
+
+}
 
 chrome.devtools.panels.elements.onSelectionChanged.addListener(function(){
 
@@ -469,35 +571,6 @@ chrome.devtools.panels.elements.onSelectionChanged.addListener(function(){
 } );
 
 function update() {
-
-	if( toolbar === null ) {
-
-		toolbar = document.getElementById( 'toolbar' );
-
-		for( var j in registeredFilters ) {
-
-			var f = registeredFilters[ j ];
-
-			var li = document.createElement( 'li' );
-
-			var b = document.createElement( 'a' );
-			b.textContent = f.name;
-			b.setAttribute( 'href', '#' );
-			li.appendChild( b );
-			toolbar.appendChild( li );
-
-			b.addEventListener( 'click', function( e ) {
-				var filter = new registeredFilters[ this ]();
-				var ui = filter.composeUI();
-				filtersPanel.appendChild( ui );
-				styleFilters.push( filter );
-				onValueUpdated();
-			}.bind( j ) )
-		}
-
-	}
-
-	var filtersPanel = document.getElementById( 'filters-panel' );
 
 	chrome.devtools.inspectedWindow.eval( 'window.getComputedStyle( $0 ).getPropertyValue( "-webkit-filter" )', 
 		
@@ -516,12 +589,19 @@ function update() {
 					var filter = new registeredFilters[ f.name ]();
 					filter.parseValue( f.value );
 					var ui = filter.composeUI();
+					ui.setAttribute( 'data-filter', styleFilters.length );
 					filtersPanel.appendChild( ui );
 					styleFilters.push( filter );
 				}
 			} );
 
-			sort = Sortable.create( filtersPanel, { animation: 150, handle: '.handle' } ); 
+			sort = Sortable.create( filtersPanel, { 
+				animation: 150, 
+				handle: '.handle',
+				onUpdate: function ( e ){
+					onValueUpdated();
+				}
+ 			} ); 
 
 		}
 
@@ -531,15 +611,28 @@ function update() {
 
 function processDeclaration( str ) {
 
+	var level = 0;
+	var p = 0;
+	var name = '';
 	var res = [];
-	var m;
+	for( var j = 0; j < str.length; j++ ) {
+		var c = str[ j ];
+		if( c === '(' ){
+			if( level === 0 ) {
+				name = str.substr( p, j - p ).trim();
+				p = j + 1;
+			}
+			level++;
+		}else if( c === ')' ){
+			level--;
+			if( level === 0 ){
+				var value = str.substr( p, j - p );
+				res.push( { 'name': name, 'value': value } );
+				p = j + 1;
+			}
+		}else{
 
-	re.lastIndex = 0;
-	while( ( m = re.exec( str ) ) !== null) {
-		if( m.index === re.lastIndex ) {
-			re.lastIndex++;
 		}
-		res.push( { 'name': m[ 1 ], 'value': m[ 2 ] } );
 	}
 
 	return res;
@@ -548,7 +641,8 @@ function processDeclaration( str ) {
 
 function getFilters() {
 
-	return getComputedStyle( $0 ).getPropertyValue( '-webkit-filter' );
+	var computedStyle = getComputedStyle( $0 );
+	return computedStyle.getPropertyValue( 'filter' ) || computedStyle.getPropertyValue( '-webkit-filter' );
 
 }
 
