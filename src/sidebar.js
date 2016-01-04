@@ -498,6 +498,32 @@ DropShadow.prototype.getValue = function() {
 
 }
 
+function Url() {
+
+	Filter.call( this );
+
+	this.name = 'url';
+	this.addParam( new TextFilterParam( 'url' ) )
+
+	this.params.url.setValue( '' );
+
+}
+
+Url.prototype = Object.create( Filter.prototype );
+
+Url.prototype.parseValue = function( value ) {
+
+	var url = value.replace( /\'/gmi, '' );
+	this.params.url.setValue( url );
+	
+}
+
+Url.prototype.getValue = function() {
+
+	return 'url(' + this.params.url.value + ')';
+
+}
+
 registerFilter( 'blur', Blur );
 registerFilter( 'grayscale', Grayscale );
 registerFilter( 'brightness', Brightness );
@@ -508,6 +534,7 @@ registerFilter( 'hue-rotate', HueRotate );
 registerFilter( 'invert', Invert );
 registerFilter( 'opacity', Opacity );
 registerFilter( 'drop-shadow', DropShadow );
+registerFilter( 'url', Url );
 
 var toolbar = null;
 var filtersPanel = null;
