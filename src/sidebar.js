@@ -588,21 +588,26 @@ function onLoad() {
 		toolbar.appendChild( li );
 
 		b.addEventListener( 'click', function( e ) {
+			
 			var filter = new registeredFilters[ this ]();
 			var ui = filter.composeUI();
 			ui.setAttribute( 'data-filter', styleFilters.length );
 			filtersPanel.appendChild( ui );
 			styleFilters.push( filter );
 			onValueUpdated();
-		}.bind( j ) )
 
-		sort = Sortable.create( filtersPanel, { 
-			animation: 150, 
-			handle: '.handle',
-			onUpdate: function ( e ){
-				onValueUpdated();
+			if( sort ) {
+				sort.destroy();
+				sort = null;
 			}
-		} ); 
+			
+			sort = Sortable.create( filtersPanel, { 
+				animation: 150, 
+				handle: '.handle',
+				onUpdate: onValueUpdated
+			} ); 
+
+		}.bind( j ) )
 		
 	}
 
@@ -651,9 +656,7 @@ function update() {
 				sort = Sortable.create( filtersPanel, { 
 					animation: 150, 
 					handle: '.handle',
-					onUpdate: function ( e ){
-						onValueUpdated();
-					}
+					onUpdate: onValueUpdated
 	 			} ); 
 
 	 		} else {
