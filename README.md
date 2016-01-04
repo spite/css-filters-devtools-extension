@@ -24,6 +24,7 @@ Supported filters:
 - Invert
 - Opacity
 - DropShadow
+- Url
 
 Add and remove
 Edit with sliders and input boxes
@@ -31,7 +32,6 @@ Drag and drop to arrange the filter stack
 
 #### TO DO ####
 
-Add support for ``filter: url()``
 Improve color selector in ``drop-shadow``
 
 #### Credits ####
