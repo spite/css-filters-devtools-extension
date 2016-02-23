@@ -552,7 +552,12 @@ function onValueUpdated() {
 		values.push( f.getValue() );
 	}
 
-	if( values.length === 0 ) values.push( 'none' );
+	if( values.length === 0 ) {
+		noFilters.style.display = 'block';
+		values.push( 'none' );
+	} else {
+		noFilters.style.display = 'none';
+	}
 
 	chrome.devtools.inspectedWindow.eval( '$0.style.webkitFilter="' + values.join( ' ' ) + '"' );
 
